@@ -4,12 +4,50 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-		<groupId>spare.n52.yadarts</groupId>
+		<groupId>spare.n52.yadarts.server</groupId>
 		<artifactId>yadarts-server</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>yadarts-api</artifactId>
+	<artifactId>core</artifactId>
 	<packaging>jar</packaging>
+	
+	<dependencies>
+		<dependency>
+			<groupId>spare.n52.yadarts</groupId>
+			<artifactId>yadarts-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>spare.n52.yadarts</groupId>
+			<artifactId>yadarts-dummy-board</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>spare.n52.yadarts</groupId>
+			<artifactId>yadarts-runtime</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-multibindings</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-guice</artifactId>
+        </dependency>
+		
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+		</dependency>
+            
+	</dependencies>
 
 </project>
