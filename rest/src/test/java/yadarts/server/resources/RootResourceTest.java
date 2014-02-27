@@ -14,24 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.resources;
 
-import yadarts.server.RuntimeEngine;
-import yadarts.server.json.GameStateEncoder;
-import yadarts.server.json.PlayerEncoder;
-import yadarts.server.json.ScoreEncoder;
+import java.util.Map;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import org.testng.Assert;
+import org.testng.annotations.Guice;
+import org.testng.annotations.Test;
 
-public class CoreModule extends AbstractModule {
+import yadarts.server.guice.CoreModule;
+import yadarts.server.guice.RestModule;
 
-	@Override
-	protected void configure() {
-		bind(RuntimeEngine.class).in(Scopes.SINGLETON);
-		bind(ScoreEncoder.class);
-		bind(PlayerEncoder.class);
-		bind(GameStateEncoder.class);
+import com.google.inject.Inject;
+
+@Guice(modules = {CoreModule.class, RestModule.class})
+public class RootResourceTest {
+
+	@Inject
+	private RootResource res;
+	
+	@Test
+	public void testResource() {
+		Map<String, Object> result = res.startGame();
+		
+		Assert.assertEquals(result.get("success"), true);
+		
+		result = res.startGame();
+		
+		Assert.assertEquals(result.get("success"), false);
 	}
-
+	
 }

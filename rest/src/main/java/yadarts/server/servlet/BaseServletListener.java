@@ -41,7 +41,7 @@ public class BaseServletListener extends GuiceServletContextListener {
 				}
 
 				Map<String, String> initParams = new HashMap<>();
-				initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
+//				initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
 				
 				// Route all requests through GuiceContainer
 				serve("/*").with(GuiceContainer.class, initParams);

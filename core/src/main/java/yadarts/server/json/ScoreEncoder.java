@@ -14,24 +14,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.json;
 
-import yadarts.server.RuntimeEngine;
-import yadarts.server.json.GameStateEncoder;
-import yadarts.server.json.PlayerEncoder;
-import yadarts.server.json.ScoreEncoder;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.inject.Singleton;
 
-public class CoreModule extends AbstractModule {
+import spare.n52.yadarts.games.Score;
 
-	@Override
-	protected void configure() {
-		bind(RuntimeEngine.class).in(Scopes.SINGLETON);
-		bind(ScoreEncoder.class);
-		bind(PlayerEncoder.class);
-		bind(GameStateEncoder.class);
+@Provider
+@Singleton
+public class ScoreEncoder extends AbstractJSONMessageBodyWriter<Score> {
+
+	public ScoreEncoder() {
+		super(Score.class);
 	}
+	
+	@Override
+	public ObjectNode encodeJSON(Score t, MediaType mt) {
+		ObjectNode node = new ObjectNode(jsonNodeFactory());
+		
+		node.put("darts", t.getThrownDarts());
+		node.put("points", t.getTotalScore());
+		node.put("totalTime", t.getTotalTime());
+		
+		return node;
+	}
+	
 
 }

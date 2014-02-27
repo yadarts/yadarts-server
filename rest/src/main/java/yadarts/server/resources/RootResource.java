@@ -24,36 +24,68 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 
+import spare.n52.yadarts.EventEngine;
+import spare.n52.yadarts.entity.InteractionEvent;
+import spare.n52.yadarts.entity.PointEvent;
+import spare.n52.yadarts.event.EventListener;
+import spare.n52.yadarts.games.AbstractGame;
 import yadarts.server.RuntimeEngine;
+import yadarts.server.entity.GameState;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-@Path("/")
+@Path("/yadarts")
 public class RootResource {
 
-	@Inject
 	private RuntimeEngine engine;
 	
+	protected PointEvent lastPointHit;
+	
+	@Inject
+	public RootResource(RuntimeEngine e) {
+		this.engine = e;
+		EventEngine ee = engine.getEventEngine();
+		ee.registerListener(new EventListener() {
+			
+			@Override
+			public void receiveEvent(InteractionEvent event) {
+				if (event instanceof PointEvent) {
+					lastPointHit = (PointEvent) event;
+				}
+			}
+		});
+	}
+	
 	@GET
-	@Produces("text/plain")
-	public String get(@QueryParam("x") String x) {
-		return "Howdy Guice. Injected query parameter "
-				+ (x != null ? "x = " + x : "x is not injected");
+	@Produces(MediaType.APPLICATION_JSON)
+	public GameState get() {
+		GameState map = new GameState();
+		AbstractGame game = engine.getActiveGame();
+		
+		if (game != null) {
+			map.setName(game.getShortName());
+			map.setPlayers(game.getPlayers());
+			map.setScores(game.getScores());	
+		}
+		else {
+			map.setName("null");
+		}
+		
+		return map;
 	}
 
-	@Consumes("application/json")
-	@Produces("application/json")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@POST
 	public Map<String, Object> startGame() {
 		Map<String, Object> node = new HashMap<>();
 		
 		if (!engine.hasActiveGame()) {
 			node.put("success", true);
-			engine.startGame();
 		}
 		else {
 			node.put("success", false);
