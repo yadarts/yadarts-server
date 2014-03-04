@@ -38,10 +38,6 @@ public class RootResourceTest {
 		Map<String, Object> result = res.startGame();
 		
 		Assert.assertEquals(result.get("success"), true);
-		
-		result = res.startGame();
-		
-		Assert.assertEquals(result.get("success"), false);
 	}
 	
 }
