@@ -18,6 +18,10 @@
 			<artifactId>all</artifactId>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 	</dependencies>
 
 </project>

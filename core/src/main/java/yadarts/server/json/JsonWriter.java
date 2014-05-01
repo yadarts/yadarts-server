@@ -16,29 +16,23 @@
  */
 package yadarts.server.json;
 
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.Provider;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Singleton;
-
-import spare.n52.yadarts.entity.Player;
 
 @Provider
-@Singleton
-public class PlayerEncoder extends AbstractJSONWriter<Player> {
+@Produces(MediaType.APPLICATION_JSON)
+public class JsonWriter extends AbstractJSONWriter<JsonNode> {
+   
+	public JsonWriter() {
+        super(JsonNode.class);
+    }
 
-	public PlayerEncoder() {
-		super(Player.class);
-	}
-	
-	@Override
-	public ObjectNode encode(Player t, MediaType mt) {
-		ObjectNode node = new ObjectNode(createJSONNodeFactory());
-		
-		node.put("name", t.getName());
-		
-		return node;
-	}
-
+    @Override
+    public ObjectNode encode(JsonNode t, MediaType mt) {
+        return (ObjectNode) t;
+    }
 }

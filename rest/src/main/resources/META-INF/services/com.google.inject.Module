@@ -1,1 +1,2 @@
 yadarts.server.guice.RestModule
+yadarts.server.guice.DecoderModule

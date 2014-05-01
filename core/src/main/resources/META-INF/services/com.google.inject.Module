@@ -1,1 +1,2 @@
 yadarts.server.guice.CoreModule
+yadarts.server.guice.JacksonModule

@@ -30,7 +30,7 @@ import yadarts.server.entity.GameState;
 
 @Provider
 @Singleton
-public class GameStateEncoder extends AbstractJSONMessageBodyWriter<GameState> {
+public class GameStateEncoder extends AbstractJSONWriter<GameState> {
 
 	private ScoreEncoder scoreEncoder;
 
@@ -41,14 +41,16 @@ public class GameStateEncoder extends AbstractJSONMessageBodyWriter<GameState> {
 	}
 	
 	@Override
-	public ObjectNode encodeJSON(GameState t, MediaType mt) {
-		ObjectNode node = emptyObject();
+	public ObjectNode encode(GameState t, MediaType mt) {
+		ObjectNode node = createNewEmptyObject();
 		node.put("name", t.getName());
-		ObjectNode scores = emptyObject();
+		ObjectNode scores = createNewEmptyObject();
 		
-		for (Player p : t.getPlayers()) {
-			Score s = t.getScores().get(p);
-			scores.put(p.getName(), (s == null ? emptyObject() : scoreEncoder.encodeJSON(s, mt)));
+		if (t.getPlayers() != null) {
+			for (Player p : t.getPlayers()) {
+				Score s = t.getScores().get(p);
+				scores.put(p.getName(), (s == null ? createNewEmptyObject() : scoreEncoder.encode(s, mt)));
+			}	
 		}
 		
 		node.put("scores", scores);

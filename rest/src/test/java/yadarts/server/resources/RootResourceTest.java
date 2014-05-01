@@ -16,12 +16,13 @@
  */
 package yadarts.server.resources;
 
-import java.util.Map;
-
 import org.testng.Assert;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
+import spare.n52.yadarts.AlreadyRunningException;
+import spare.n52.yadarts.InitializationException;
+import yadarts.server.entity.GameState;
 import yadarts.server.guice.CoreModule;
 import yadarts.server.guice.RestModule;
 
@@ -34,10 +35,10 @@ public class RootResourceTest {
 	private RootResource res;
 	
 	@Test
-	public void testResource() {
-		Map<String, Object> result = res.startGame();
+	public void testResource() throws InitializationException, AlreadyRunningException {
+		GameState result = res.startGame(null);
 		
-		Assert.assertEquals(result.get("success"), true);
+		Assert.assertEquals(result.getName().equals("null"), true);
 	}
 	
 }

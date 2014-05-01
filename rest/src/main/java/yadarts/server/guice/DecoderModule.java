@@ -14,31 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.json;
+package yadarts.server.guice;
 
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Singleton;
+import spare.n52.yadarts.games.AbstractGame;
+import yadarts.server.decoding.GameDecoder;
+import yadarts.server.decoding.JSONDecoder;
 
-import spare.n52.yadarts.entity.Player;
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
+import com.google.inject.TypeLiteral;
 
-@Provider
-@Singleton
-public class PlayerEncoder extends AbstractJSONWriter<Player> {
+public class DecoderModule extends AbstractModule {
 
-	public PlayerEncoder() {
-		super(Player.class);
+	@Override
+	protected void configure() {
+		bind(GameDecoder.class).in(Scopes.SINGLETON);
+        bind(new TypeLiteral<JSONDecoder<AbstractGame>>() {
+        }).to(GameDecoder.class);	
 	}
 	
-	@Override
-	public ObjectNode encode(Player t, MediaType mt) {
-		ObjectNode node = new ObjectNode(createJSONNodeFactory());
-		
-		node.put("name", t.getName());
-		
-		return node;
-	}
-
+	
 }

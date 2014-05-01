@@ -16,8 +16,6 @@
  */
 package yadarts.server.resources;
 
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -26,11 +24,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import spare.n52.yadarts.AlreadyRunningException;
 import spare.n52.yadarts.EventEngine;
+import spare.n52.yadarts.InitializationException;
 import spare.n52.yadarts.entity.InteractionEvent;
 import spare.n52.yadarts.entity.PointEvent;
 import spare.n52.yadarts.event.EventListener;
 import spare.n52.yadarts.games.AbstractGame;
+import spare.n52.yadarts.games.GameEventAdapter;
+import spare.n52.yadarts.games.GameEventBus;
 import yadarts.server.RuntimeEngine;
 import yadarts.server.entity.GameState;
 
@@ -41,6 +46,7 @@ import com.google.inject.Singleton;
 @Path("/yadarts")
 public class RootResource {
 
+	private static final Logger logger = LoggerFactory.getLogger(RootResource.class);
 	private RuntimeEngine engine;
 	
 	protected PointEvent lastPointHit;
@@ -81,16 +87,44 @@ public class RootResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@POST
-	public Map<String, Object> startGame() {
-		Map<String, Object> node = new HashMap<>();
+	public GameState startGame(AbstractGame game) throws InitializationException, AlreadyRunningException {
+		if (this.engine.hasActiveGame()) {
+			throw new AlreadyRunningException("There is already an active game!");
+		}
 		
-		if (!engine.hasActiveGame()) {
-			node.put("success", true);
+		GameState map = new GameState();
+		
+		if (game != null) {
+			map.setName(game.getShortName());
+			map.setPlayers(game.getPlayers());
+			map.setScores(game.getScores());
+			
+			initializeEventEngine(game);
 		}
 		else {
-			node.put("success", false);
+			map.setName("null");
 		}
 		
-		return node;
+		return map;
+	}
+
+	private void initializeEventEngine(AbstractGame game) throws InitializationException, AlreadyRunningException {
+		EventEngine eventEngine = this.engine.getEventEngine();
+		
+		eventEngine.registerListener(game);
+		
+		GameEventBus.instance().registerListener(new GameEventAdapter() {
+			
+			@Override
+			public void onGameStarted(AbstractGame game) {
+				logger.info("Game started!");
+			}
+			
+		});
+		
+		GameEventBus.instance().startGame(game);
+		
+		eventEngine.start();
+		
 	}
 }

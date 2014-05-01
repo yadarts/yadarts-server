@@ -26,15 +26,15 @@ import spare.n52.yadarts.games.Score;
 
 @Provider
 @Singleton
-public class ScoreEncoder extends AbstractJSONMessageBodyWriter<Score> {
+public class ScoreEncoder extends AbstractJSONWriter<Score> {
 
 	public ScoreEncoder() {
 		super(Score.class);
 	}
 	
 	@Override
-	public ObjectNode encodeJSON(Score t, MediaType mt) {
-		ObjectNode node = new ObjectNode(jsonNodeFactory());
+	public ObjectNode encode(Score t, MediaType mt) {
+		ObjectNode node = new ObjectNode(createJSONNodeFactory());
 		
 		node.put("darts", t.getThrownDarts());
 		node.put("points", t.getTotalScore());

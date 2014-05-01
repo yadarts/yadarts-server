@@ -14,31 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.json;
+package yadarts.server.decoding;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Singleton;
+import com.fasterxml.jackson.databind.JsonNode;
 
-import spare.n52.yadarts.entity.Player;
-
-@Provider
-@Singleton
-public class PlayerEncoder extends AbstractJSONWriter<Player> {
-
-	public PlayerEncoder() {
-		super(Player.class);
-	}
-	
-	@Override
-	public ObjectNode encode(Player t, MediaType mt) {
-		ObjectNode node = new ObjectNode(createJSONNodeFactory());
-		
-		node.put("name", t.getName());
-		
-		return node;
-	}
+public interface JSONDecoder<T> {
+  
+	T decode(JsonNode j, MediaType mt);
 
 }
