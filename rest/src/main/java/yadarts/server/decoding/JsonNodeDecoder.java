@@ -14,21 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.decoding;
 
-import yadarts.server.exceptions.GenericExceptionMapper;
-import yadarts.server.resources.GameManagerResource;
-import yadarts.server.resources.RootResource;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
 
-import com.google.inject.AbstractModule;
+import com.fasterxml.jackson.databind.JsonNode;
 
-public class RestModule extends AbstractModule {
+@Provider
+public class JsonNodeDecoder extends AbstractJSONReader<JsonNode> {
+
+	public JsonNodeDecoder() {
+		super(JsonNode.class);
+	}
 
 	@Override
-	protected void configure() {
-		bind(RootResource.class);
-		bind(GameManagerResource.class);
-		bind(GenericExceptionMapper.class);
+	public JsonNode decode(JsonNode j, MediaType mt) {
+		return j;
 	}
 
 }

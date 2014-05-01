@@ -14,47 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.json;
+package yadarts.server.exceptions;
 
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import spare.n52.yadarts.entity.Player;
-import spare.n52.yadarts.games.Score;
-
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import yadarts.server.entity.GameState;
 
 @Provider
 @Singleton
-public class GameStateEncoder extends AbstractJSONWriter<GameState> {
-
-	private ScoreEncoder scoreEncoder;
-
+public class GenericExceptionMapper implements ExceptionMapper<Exception> {
+    
+	
 	@Inject
-	public GameStateEncoder(ScoreEncoder se) {
-		super(GameState.class);
-		this.scoreEncoder = se;
-	}
+	private JsonNodeFactory factory;
 	
 	@Override
-	public ObjectNode encode(GameState t, MediaType mt) {
-		ObjectNode node = createNewEmptyObject();
-		node.put("name", t.getName());
-		ObjectNode scores = createNewEmptyObject();
-		
-		if (t.getPlayers() != null) {
-			for (Player p : t.getPlayers()) {
-				Score s = t.getScores().get(p);
-				scores.put(p.getName(), (s == null ? createNewEmptyObject() : scoreEncoder.encode(s, mt)));
-			}	
-			node.put("scores", scores);
-		}
-
-		return node;
-	}
-
+    public Response toResponse(Exception exception) {
+		ObjectNode error = factory.objectNode();
+		error.put("error", exception.getMessage());
+        return Response
+                .status(500)
+                .type(MediaType.APPLICATION_JSON)
+                .entity(error)
+                .build();
+    }
+	
 }
+

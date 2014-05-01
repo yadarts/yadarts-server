@@ -20,7 +20,9 @@ package yadarts.server.guice;
 import spare.n52.yadarts.games.AbstractGame;
 import yadarts.server.decoding.GameDecoder;
 import yadarts.server.decoding.JSONDecoder;
+import yadarts.server.decoding.JsonNodeDecoder;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
@@ -31,7 +33,11 @@ public class DecoderModule extends AbstractModule {
 	protected void configure() {
 		bind(GameDecoder.class).in(Scopes.SINGLETON);
         bind(new TypeLiteral<JSONDecoder<AbstractGame>>() {
-        }).to(GameDecoder.class);	
+        }).to(GameDecoder.class);
+    
+        bind(JsonNodeDecoder.class).in(Scopes.SINGLETON);
+        bind(new TypeLiteral<JSONDecoder<JsonNode>>() {
+        }).to(JsonNodeDecoder.class);	
 	}
 	
 	

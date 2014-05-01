@@ -16,13 +16,13 @@
  */
 package yadarts.server.resources;
 
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,24 +39,34 @@ import spare.n52.yadarts.games.GameEventBus;
 import yadarts.server.RuntimeEngine;
 import yadarts.server.entity.GameState;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.Provider;
 
-@Singleton
-@Path("/yadarts")
+@Path(RootResource.ROOT_RESOURCE_URL)
 public class RootResource {
+	
+	public static final String ROOT_RESOURCE_URL = "/rest";
 
-	private static final Logger logger = LoggerFactory.getLogger(RootResource.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(RootResource.class);
 	private RuntimeEngine engine;
-	
-	protected PointEvent lastPointHit;
-	
+
 	@Inject
-	public RootResource(RuntimeEngine e) {
+	private JsonNodeFactory factory;
+
+	protected PointEvent lastPointHit;
+	private UriInfo uriInfo;
+
+	@Inject
+	public RootResource(RuntimeEngine e, Provider<UriInfo> u) {
 		this.engine = e;
+		this.uriInfo = u.get();
 		EventEngine ee = engine.getEventEngine();
 		ee.registerListener(new EventListener() {
-			
+
 			@Override
 			public void receiveEvent(InteractionEvent event) {
 				if (event instanceof PointEvent) {
@@ -64,67 +74,71 @@ public class RootResource {
 				}
 			}
 		});
+		
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public GameState get() {
-		GameState map = new GameState();
-		AbstractGame game = engine.getActiveGame();
-		
-		if (game != null) {
-			map.setName(game.getShortName());
-			map.setPlayers(game.getPlayers());
-			map.setScores(game.getScores());	
-		}
-		else {
-			map.setName("null");
-		}
-		
-		return map;
+	public JsonNode get() {
+
+		ObjectNode root = factory.objectNode();
+		root.put("game", this.uriInfo.getAbsolutePathBuilder()
+				.path("game").build().toString());
+
+		return root;
 	}
 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@POST
-	public GameState startGame(AbstractGame game) throws InitializationException, AlreadyRunningException {
+	public GameState startGame(AbstractGame game)
+			throws InitializationException, AlreadyRunningException {
 		if (this.engine.hasActiveGame()) {
-			throw new AlreadyRunningException("There is already an active game!");
+			throw new AlreadyRunningException(
+					"There is already an active game!");
 		}
-		
+
 		GameState map = new GameState();
-		
+
 		if (game != null) {
 			map.setName(game.getShortName());
 			map.setPlayers(game.getPlayers());
 			map.setScores(game.getScores());
-			
+
 			initializeEventEngine(game);
-		}
-		else {
+		} else {
 			map.setName("null");
 		}
-		
+
 		return map;
 	}
 
-	private void initializeEventEngine(AbstractGame game) throws InitializationException, AlreadyRunningException {
+	private void initializeEventEngine(AbstractGame game)
+			throws InitializationException, AlreadyRunningException {
 		EventEngine eventEngine = this.engine.getEventEngine();
-		
+
 		eventEngine.registerListener(game);
-		
-		GameEventBus.instance().registerListener(new GameEventAdapter() {
-			
-			@Override
-			public void onGameStarted(AbstractGame game) {
-				logger.info("Game started!");
-			}
-			
-		});
-		
+
 		GameEventBus.instance().startGame(game);
 		
+		GameEventBus.instance().registerListener(new LocalGameEventListener());
+
 		eventEngine.start();
+
+	}
+	
+	private final class LocalGameEventListener extends GameEventAdapter {
+		
+		@Override
+		public void onGameStarted(AbstractGame game) {
+			logger.info("Game started!");
+		}
+		
+		@Override
+		public void onGameFinished(AbstractGame game) {
+			logger.info("Game finished!");
+			GameEventBus.instance().unRegisterListener(this);
+		}
 		
 	}
 }

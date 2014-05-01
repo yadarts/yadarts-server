@@ -72,6 +72,7 @@ public class RuntimeEngine {
 		public void onGameFinished(AbstractGame game) {
 			gameRunning = false;
 			activeGame = null;
+			eventEngine.shutdown();
 		}
 		
 	}
