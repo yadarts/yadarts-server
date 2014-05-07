@@ -21,6 +21,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
@@ -36,19 +37,17 @@ import spare.n52.yadarts.event.EventListener;
 import spare.n52.yadarts.games.AbstractGame;
 import spare.n52.yadarts.games.GameEventAdapter;
 import spare.n52.yadarts.games.GameEventBus;
+import yadarts.server.Constants;
 import yadarts.server.RuntimeEngine;
-import yadarts.server.entity.GameState;
+import yadarts.server.entity.GameScoreSummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
-@Path(RootResource.ROOT_RESOURCE_URL)
+@Path(Constants.ROOT_RESOURCE_URL)
 public class RootResource {
-	
-	public static final String ROOT_RESOURCE_URL = "/rest";
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(RootResource.class);
@@ -58,12 +57,13 @@ public class RootResource {
 	private JsonNodeFactory factory;
 
 	protected PointEvent lastPointHit;
+	
+	@Context
 	private UriInfo uriInfo;
 
 	@Inject
-	public RootResource(RuntimeEngine e, Provider<UriInfo> u) {
+	public RootResource(RuntimeEngine e) {
 		this.engine = e;
-		this.uriInfo = u.get();
 		EventEngine ee = engine.getEventEngine();
 		ee.registerListener(new EventListener() {
 
@@ -80,7 +80,7 @@ public class RootResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public JsonNode get() {
-
+		
 		ObjectNode root = factory.objectNode();
 		root.put("game", this.uriInfo.getAbsolutePathBuilder()
 				.path("game").build().toString());
@@ -91,14 +91,14 @@ public class RootResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@POST
-	public GameState startGame(AbstractGame game)
+	public GameScoreSummary startGame(AbstractGame game)
 			throws InitializationException, AlreadyRunningException {
 		if (this.engine.hasActiveGame()) {
 			throw new AlreadyRunningException(
 					"There is already an active game!");
 		}
 
-		GameState map = new GameState();
+		GameScoreSummary map = new GameScoreSummary();
 
 		if (game != null) {
 			map.setName(game.getShortName());

@@ -26,22 +26,22 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import yadarts.server.entity.GameState;
+import yadarts.server.entity.GameScoreSummary;
 
 @Provider
 @Singleton
-public class GameStateEncoder extends AbstractJSONWriter<GameState> {
+public class GameStateEncoder extends AbstractJSONWriter<GameScoreSummary> {
 
 	private ScoreEncoder scoreEncoder;
 
 	@Inject
 	public GameStateEncoder(ScoreEncoder se) {
-		super(GameState.class);
+		super(GameScoreSummary.class);
 		this.scoreEncoder = se;
 	}
 	
 	@Override
-	public ObjectNode encode(GameState t, MediaType mt) {
+	public ObjectNode encode(GameScoreSummary t, MediaType mt) {
 		ObjectNode node = createNewEmptyObject();
 		node.put("name", t.getName());
 		ObjectNode scores = createNewEmptyObject();

@@ -16,19 +16,16 @@
  */
 package yadarts.server.entity;
 
-import java.util.List;
+import java.util.Date;
 
-import spare.n52.yadarts.entity.Player;
-import spare.n52.yadarts.games.Game;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public interface GameConfiguration {
-	
-	public Class<? extends Game> getTheGame();
-	
-	public void setTheGame(Class<? extends Game> theGame);
-	
-	public List<Player> getPlayers();
-	
-	public void setPlayers(List<Player> players);
-	
+@XmlRootElement
+public class BasicMessage {
+
+	public long time = new Date().getTime();
+
+	public BasicMessage() {
+	}
 }
+

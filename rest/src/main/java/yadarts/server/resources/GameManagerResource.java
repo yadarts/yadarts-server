@@ -28,15 +28,16 @@ import spare.n52.yadarts.AlreadyRunningException;
 import spare.n52.yadarts.entity.PointEvent;
 import spare.n52.yadarts.games.AbstractGame;
 import spare.n52.yadarts.games.GameEventBus;
+import yadarts.server.Constants;
 import yadarts.server.RuntimeEngine;
-import yadarts.server.entity.GameState;
+import yadarts.server.entity.GameScoreSummary;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 
-@Path(RootResource.ROOT_RESOURCE_URL+ "/game")
+@Path(Constants.ROOT_RESOURCE_URL+ "/game")
 public class GameManagerResource {
 	
 	private RuntimeEngine engine;
@@ -53,8 +54,8 @@ public class GameManagerResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public GameState get() {
-		GameState map = new GameState();
+	public GameScoreSummary get() {
+		GameScoreSummary map = new GameScoreSummary();
 		AbstractGame game = engine.getActiveGame();
 		
 		if (game != null) {

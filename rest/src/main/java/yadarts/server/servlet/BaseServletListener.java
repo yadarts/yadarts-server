@@ -16,22 +16,25 @@
  */
 package yadarts.server.servlet;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.ServiceLoader;
+
+import org.atmosphere.guice.AtmosphereGuiceServlet;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
+import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.sun.jersey.guice.JerseyServletModule;
-import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
+import com.google.inject.servlet.ServletModule;
 
 public class BaseServletListener extends GuiceServletContextListener {
 
 	@Override
 	protected Injector getInjector() {
-		return Guice.createInjector(new JerseyServletModule() {
+		return Guice.createInjector(new ServletModule() {
 			@Override
 			protected void configureServlets() {
 				ServiceLoader<Module> modules = ServiceLoader.load(Module.class);
@@ -39,12 +42,10 @@ public class BaseServletListener extends GuiceServletContextListener {
 				for (Module module : modules) {
 					install(module);
 				}
-
-				Map<String, String> initParams = new HashMap<>();
-//				initParams.put("com.sun.jersey.api.json.POJOMappingFeature", "true");
-				
-				// Route all requests through GuiceContainer
-				serve("/*").with(GuiceContainer.class, initParams);
+			
+				bind(new TypeLiteral<Map<String, String>>() {
+		        }).annotatedWith(Names.named(AtmosphereGuiceServlet.PROPERTIES)).toInstance(
+		                Collections.<String, String>emptyMap());
 			}
 		});
 	}

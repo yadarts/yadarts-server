@@ -14,28 +14,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.entity;
 
-import spare.n52.yadarts.games.GameEventBus;
-import yadarts.server.RuntimeEngine;
-import yadarts.server.json.GameStateEncoder;
-import yadarts.server.json.PlayerEncoder;
-import yadarts.server.json.ScoreEncoder;
+import java.util.List;
+import java.util.Map;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import spare.n52.yadarts.entity.Player;
+import spare.n52.yadarts.games.Score;
 
-public class CoreModule extends AbstractModule {
+public class GameScoreSummary {
 
-	@Override
-	protected void configure() {
-		bind(RuntimeEngine.class).in(Scopes.SINGLETON);
-		
-		bind(GameEventBus.class).toInstance(GameEventBus.instance());
-		
-		bind(ScoreEncoder.class);
-		bind(PlayerEncoder.class);
-		bind(GameStateEncoder.class);
+	private String name;
+	private Map<Player, Score> scores;
+	private List<Player> players;
+
+	public void setName(String shortName) {
+		this.name = shortName;
 	}
+
+	public void setScores(Map<Player, Score> scores) {
+		this.scores = scores;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public Map<Player, Score> getScores() {
+		return scores;
+	}
+
+	public void setPlayers(List<Player> players) {
+		this.players = players;
+	}
+
+	public List<Player> getPlayers() {
+		return players;
+	}
+	
 
 }

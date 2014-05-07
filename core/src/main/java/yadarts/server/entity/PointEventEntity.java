@@ -14,28 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.entity;
 
-import spare.n52.yadarts.games.GameEventBus;
-import yadarts.server.RuntimeEngine;
-import yadarts.server.json.GameStateEncoder;
-import yadarts.server.json.PlayerEncoder;
-import yadarts.server.json.ScoreEncoder;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import spare.n52.yadarts.entity.PointEvent;
 
-public class CoreModule extends AbstractModule {
+@XmlRootElement
+public class PointEventEntity extends BasicMessage {
 
-	@Override
-	protected void configure() {
-		bind(RuntimeEngine.class).in(Scopes.SINGLETON);
-		
-		bind(GameEventBus.class).toInstance(GameEventBus.instance());
-		
-		bind(ScoreEncoder.class);
-		bind(PlayerEncoder.class);
-		bind(GameStateEncoder.class);
+	public int baseNumber = 0;
+	public int multiplier = 0;
+	public boolean outerRing = false;
+	public int scoreValue = 0;
+	
+	public PointEventEntity() {
+	}
+	
+	public PointEventEntity(PointEvent event) {
+		super();
+		baseNumber = event.getBaseNumber();
+		multiplier = event.getMultiplier();
+		outerRing = event.isOuterRing();
+		time = event.getTimestamp();
+		scoreValue = event.getScoreValue();
 	}
 
 }

@@ -14,28 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package yadarts.server.guice;
+package yadarts.server.entity;
 
-import spare.n52.yadarts.games.GameEventBus;
-import yadarts.server.RuntimeEngine;
-import yadarts.server.json.GameStateEncoder;
-import yadarts.server.json.PlayerEncoder;
-import yadarts.server.json.ScoreEncoder;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import spare.n52.yadarts.entity.Player;
+import spare.n52.yadarts.games.Score;
 
-public class CoreModule extends AbstractModule {
+@XmlRootElement
+public class PlayerBustedEntity extends RemainingScoreEntity {
 
-	@Override
-	protected void configure() {
-		bind(RuntimeEngine.class).in(Scopes.SINGLETON);
-		
-		bind(GameEventBus.class).toInstance(GameEventBus.instance());
-		
-		bind(ScoreEncoder.class);
-		bind(PlayerEncoder.class);
-		bind(GameStateEncoder.class);
+	public PlayerBustedEntity(Player currentPlayer, Score score) {
+		super(currentPlayer, score);
+		event = "bust";
 	}
-
+	
+	public PlayerBustedEntity() {
+		super();
+		event = "bust";
+	}
+	
 }

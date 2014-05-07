@@ -16,41 +16,24 @@
  */
 package yadarts.server.entity;
 
-import java.util.List;
-import java.util.Map;
+import javax.xml.bind.annotation.XmlRootElement;
 
-import spare.n52.yadarts.entity.Player;
 import spare.n52.yadarts.games.Score;
 
-public class GameState {
+@XmlRootElement
+public class ScoreEntity {
 
-	private String name;
-	private Map<Player, Score> scores;
-	private List<Player> players;
+	public int thrownDarts;
+	public int totalTime;
+	public int totalScore;
 
-	public void setName(String shortName) {
-		this.name = shortName;
-	}
-
-	public void setScores(Map<Player, Score> scores) {
-		this.scores = scores;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public Map<Player, Score> getScores() {
-		return scores;
-	}
-
-	public void setPlayers(List<Player> players) {
-		this.players = players;
-	}
-
-	public List<Player> getPlayers() {
-		return players;
+	public ScoreEntity() {
 	}
 	
+	public ScoreEntity(Score score) {
+		this.thrownDarts = score.getThrownDarts();
+		this.totalTime = score.getTotalTime();
+		this.totalScore = score.getTotalScore();
+	}
 
 }
