@@ -17,7 +17,6 @@
 package yadarts.server.entity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,23 +31,22 @@ import yadarts.server.entity.ScoreEntity;
 @XmlRootElement
 public class GameFinishedEntity extends GameEventEntity {
 
-	public Map<String, ScoreEntity> scores = Collections.emptyMap();
-	public List<String> winners = Collections.emptyList();
+	public Map<String, ScoreEntity> scores = new HashMap<>();
+	public List<String> winners = new ArrayList<>();
 
 	public GameFinishedEntity() {
+		super();
 		event = "gameFinished";
 	}
 
 	public GameFinishedEntity(Map<Player, Score> playerScoreMap,
 			List<Player> winner) {
+		super();
 		event = "gameFinished";
-		this.scores = new HashMap<>();
 		
 		for (Player player : playerScoreMap.keySet()) {
 			this.scores.put(player.getName(), new ScoreEntity(playerScoreMap.get(player)));
 		}
-		
-		this.winners  = new ArrayList<>();
 		
 		for (Player player : winner) {
 			this.winners.add(player.getName());

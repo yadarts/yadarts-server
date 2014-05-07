@@ -11,6 +11,10 @@
 
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
+	
+	<build>
+		<finalName>yadarts</finalName>
+	</build>
 
 	<dependencies>
 		<dependency>

@@ -30,6 +30,7 @@ public class RoundStartedEntity extends GameEventEntity {
 	}
 
 	public RoundStartedEntity(int r) {
+		this();
 		this.roundNumber = r;
 	}
 	

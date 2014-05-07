@@ -18,6 +18,7 @@ package yadarts.server.guice;
 
 import spare.n52.yadarts.games.GameEventBus;
 import yadarts.server.RuntimeEngine;
+import yadarts.server.json.GameFinishedEntityEncoder;
 import yadarts.server.json.GameStateEncoder;
 import yadarts.server.json.PlayerEncoder;
 import yadarts.server.json.ScoreEncoder;
@@ -36,6 +37,8 @@ public class CoreModule extends AbstractModule {
 		bind(ScoreEncoder.class);
 		bind(PlayerEncoder.class);
 		bind(GameStateEncoder.class);
+		
+		bind(GameFinishedEntityEncoder.class);
 	}
 
 }

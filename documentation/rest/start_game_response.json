@@ -1,0 +1,11 @@
+{
+    "name": "301-Game",
+    "scores": {
+        "peter": {
+            "darts": 0,
+            "points": 301,
+            "totalTime": 0
+        },
+        "dieter": {}
+    }
+}

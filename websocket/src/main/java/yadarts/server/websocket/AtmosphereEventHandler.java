@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import spare.n52.yadarts.entity.Player;
 import spare.n52.yadarts.entity.PointEvent;
@@ -53,6 +55,8 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class AtmosphereEventHandler {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AtmosphereEventHandler.class);
 
 	private GameEventBus gameEventBus;
 	
@@ -89,9 +93,11 @@ public class AtmosphereEventHandler {
 			
 		});
 		
+		logger.info("initialized!");
 	}
 	
 	protected void broadcastMessage(BasicMessage msg) {
+		logger.info("broadcasting message: "+ msg);
 		Broadcaster b = BroadcasterFactory.getDefault().lookup("/*");
 		
 		if (b != null) {

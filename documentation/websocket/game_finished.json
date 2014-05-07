@@ -1,0 +1,19 @@
+{
+   "time":1399478631853,
+   "event":"gameFinished",
+   "scores":{
+      "dieter":{
+         "thrownDarts":6,
+         "totalScore":181,
+         "totalTime":0
+      },
+      "peter":{
+         "thrownDarts":6,
+         "totalScore":0,
+         "totalTime":0
+      }
+   },
+   "winners":[
+      "peter"
+   ]
+}

@@ -29,6 +29,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
+import com.sun.jersey.api.json.JSONConfiguration;
 
 public class BaseServletListener extends GuiceServletContextListener {
 
@@ -46,6 +47,8 @@ public class BaseServletListener extends GuiceServletContextListener {
 				bind(new TypeLiteral<Map<String, String>>() {
 		        }).annotatedWith(Names.named(AtmosphereGuiceServlet.PROPERTIES)).toInstance(
 		                Collections.<String, String>emptyMap());
+				
+				JSONConfiguration.natural().build();
 			}
 		});
 	}

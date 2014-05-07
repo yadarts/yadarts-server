@@ -24,6 +24,8 @@ import javax.ws.rs.core.MediaType;
 
 import org.atmosphere.annotation.Broadcast;
 import org.atmosphere.annotation.Suspend;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
@@ -34,12 +36,15 @@ import yadarts.server.entity.BasicMessage;
 @Produces(MediaType.APPLICATION_JSON)
 public class AtmosphereResource {
 	
+	private static final Logger logger = LoggerFactory.getLogger(AtmosphereResource.class);
+	
 	@Inject
 	protected AtmosphereEventHandler handler;
 	
 	@Suspend
 	@GET
 	public String suspend() {
+		logger.info("Received a websocket suspense request.");
 		return "";
 	}
 

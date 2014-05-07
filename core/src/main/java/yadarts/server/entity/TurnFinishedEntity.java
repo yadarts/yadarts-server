@@ -34,7 +34,7 @@ public class TurnFinishedEntity extends GameEventEntity {
 	
 	public TurnFinishedEntity(Player player, Score score) {
 		this();
-		this.score = new ScoreEntity();
+		this.score = new ScoreEntity(score);
 		this.player = player.getName();
 	}
 
